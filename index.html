@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#d9ecff">
+<title>наши полгода 💙</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 92'%3E%3Cpath d='M50 88C10 60 2 36 16 20 28 6 44 10 50 24 56 10 72 6 84 20 98 36 90 60 50 88Z' fill='%237cc4f8'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marck+Script&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<button id="mute" class="mute" type="button" hidden aria-label="выключить музыку">🔊</button>
+
+<div id="app">
+
+  <!-- ===================== 1. BOOT ===================== -->
+  <section class="screen is-active" id="s-boot" aria-label="начало">
+    <div class="wrap wrap-center">
+
+      <div class="stage" id="boot-loading">
+        <svg class="loader-heart" viewBox="0 0 100 92" aria-hidden="true">
+          <defs>
+            <clipPath id="heartClip">
+              <path d="M50 88C10 60 2 36 16 20 28 6 44 10 50 24 56 10 72 6 84 20 98 36 90 60 50 88Z"/>
+            </clipPath>
+          </defs>
+          <path class="loader-outline" d="M50 88C10 60 2 36 16 20 28 6 44 10 50 24 56 10 72 6 84 20 98 36 90 60 50 88Z"/>
+          <g clip-path="url(#heartClip)">
+            <rect class="loader-fill" x="-10" y="0" width="120" height="92"/>
+          </g>
+        </svg>
+        <p class="ui-line" id="loading-line"></p>
+      </div>
+
+      <div class="stage" id="boot-ask" hidden>
+        <h1 class="cursive ask" id="ask-line"></h1>
+        <div class="ask-buttons" id="ask-buttons">
+          <button class="btn btn-yes" type="button" id="btn-yes"></button>
+          <button class="btn-no" type="button" id="btn-no"></button>
+        </div>
+        <p class="tease" id="no-tease" aria-live="polite"></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== 2. GALLERY ===================== -->
+  <section class="screen" id="s-gallery" aria-label="галерея">
+    <div class="wrap">
+      <h2 class="cursive line" id="gallery-line"></h2>
+
+      <div class="stack" id="stack" role="button" tabindex="0" aria-label="следующее фото"></div>
+
+      <p class="hint hint-swipe" id="gallery-hint"></p>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+
+      <div class="gallery-end" id="gallery-end" hidden>
+        <p class="cursive end-line" id="gallery-end-line"></p>
+        <button class="btn" type="button" id="btn-next"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 3. CHOICE ===================== -->
+  <section class="screen" id="s-choice" aria-label="выбор">
+    <div class="wrap">
+      <h2 class="cursive line" id="choice-title"></h2>
+      <p class="hint" id="choice-hint"></p>
+
+      <div class="cards" id="cards">
+
+        <button class="card" type="button" data-id="quiz" id="card-quiz">
+          <span class="art art-quiz" aria-hidden="true">
+            <span class="bubble bubble-a"></span>
+            <span class="bubble bubble-b"></span>
+            <span class="q q1">?</span>
+            <span class="q q2">?</span>
+            <span class="q q3">?</span>
+            <span class="eyes">👀</span>
+          </span>
+          <span class="card-label"></span>
+        </button>
+
+        <button class="card" type="button" data-id="games" id="card-games">
+          <span class="art art-games" aria-hidden="true">
+            <span class="pad">
+              <span class="pad-stick"></span>
+              <span class="pad-dot"></span>
+            </span>
+            <span class="blk b1"></span>
+            <span class="blk b2"></span>
+            <span class="blk b3"></span>
+            <span class="xp">+1 XP</span>
+          </span>
+          <span class="card-label"></span>
+        </button>
+
+        <button class="card" type="button" data-id="playlists" id="card-playlists">
+          <span class="art art-music" aria-hidden="true">
+            <span class="vinyl"><span class="vinyl-hole"></span></span>
+            <span class="note n1">♪</span>
+            <span class="note n2">♫</span>
+            <span class="eq"><i></i><i></i><i></i><i></i></span>
+          </span>
+          <span class="card-label"></span>
+        </button>
+
+      </div>
+
+      <p class="reaction cursive" id="choice-reaction" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- ===================== 4. TIME ===================== -->
+  <section class="screen" id="s-time" aria-label="время">
+    <div class="wrap">
+      <h2 class="cursive line" id="time-title"></h2>
+      <p class="hint" id="time-hint"></p>
+
+      <div class="wheel-shell">
+        <div class="wheel" id="time-grid" role="group" aria-label="время"></div>
+      </div>
+
+      <p class="picked cursive" id="time-picked" aria-live="polite"></p>
+      <button class="btn" type="button" id="btn-done" disabled></button>
+    </div>
+  </section>
+
+  <!-- ===================== 5. FINAL ===================== -->
+  <section class="screen" id="s-final" aria-label="финал">
+    <div class="wrap">
+      <figure class="final-shot">
+        <img id="final-photo" alt="" decoding="async">
+      </figure>
+
+      <h2 class="cursive big" id="final-title"></h2>
+      <p class="sub" id="final-sub"></p>
+
+      <div class="summary" id="summary">
+        <p class="summary-title cursive" id="summary-title"></p>
+        <div class="summary-row">
+          <span id="sum-what-label"></span><b id="sum-what"></b>
+        </div>
+        <div class="summary-row">
+          <span id="sum-when-label"></span><b id="sum-when"></b>
+        </div>
+      </div>
+
+      <a class="btn btn-send" id="btn-send" target="_blank" rel="noopener"></a>
+    </div>
+  </section>
+
+</div>
+
+<!-- всплывающая надпись «ура 💙» -->
+<div class="pop" id="pop" aria-hidden="true"></div>
+
+<audio id="song" loop preload="auto" playsinline></audio>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
