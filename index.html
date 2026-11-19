@@ -55,7 +55,9 @@
     <div class="wrap">
       <h2 class="cursive line" id="gallery-line"></h2>
 
-      <div class="stack" id="stack" role="button" tabindex="0" aria-label="следующее фото"></div>
+      <div class="stack-shell">
+        <div class="stack" id="stack" role="button" tabindex="0" aria-label="следующее фото"></div>
+      </div>
 
       <p class="hint hint-swipe" id="gallery-hint"></p>
       <div class="dots" id="dots" aria-hidden="true"></div>
@@ -67,9 +69,34 @@
     </div>
   </section>
 
-  <!-- ===================== 3. CHOICE ===================== -->
+  <!-- ===================== 3. STATS ===================== -->
+  <section class="screen" id="s-stats" aria-label="цифры">
+    <div class="wrap stagger">
+      <h2 class="cursive line" id="stats-title"></h2>
+
+      <div class="tiles" id="tiles">
+        <div class="tile" id="tile-days">
+          <b class="tile-num" id="stat-days">0</b>
+          <span class="tile-label" id="stat-days-label"></span>
+        </div>
+        <div class="tile" id="tile-hours">
+          <b class="tile-num" id="stat-hours">0</b>
+          <span class="tile-label" id="stat-hours-label"></span>
+        </div>
+        <div class="tile" id="tile-third">
+          <b class="tile-num" id="stat-third"></b>
+          <span class="tile-label" id="stat-third-label"></span>
+        </div>
+      </div>
+
+      <p class="cursive stats-line" id="stats-line"></p>
+      <button class="btn" type="button" id="btn-stats-next"></button>
+    </div>
+  </section>
+
+  <!-- ===================== 4. CHOICE ===================== -->
   <section class="screen" id="s-choice" aria-label="выбор">
-    <div class="wrap">
+    <div class="wrap stagger">
       <h2 class="cursive line" id="choice-title"></h2>
       <p class="hint" id="choice-hint"></p>
 
@@ -89,9 +116,13 @@
 
         <button class="card" type="button" data-id="games" id="card-games">
           <span class="art art-games" aria-hidden="true">
-            <span class="pad">
-              <span class="pad-stick"></span>
-              <span class="pad-dot"></span>
+            <span class="cube">
+              <span class="cube-top"></span>
+              <span class="cube-face">
+                <span class="eye"></span>
+                <span class="eye"></span>
+                <span class="smile"></span>
+              </span>
             </span>
             <span class="blk b1"></span>
             <span class="blk b2"></span>
@@ -117,9 +148,9 @@
     </div>
   </section>
 
-  <!-- ===================== 4. TIME ===================== -->
+  <!-- ===================== 5. TIME ===================== -->
   <section class="screen" id="s-time" aria-label="время">
-    <div class="wrap">
+    <div class="wrap stagger">
       <h2 class="cursive line" id="time-title"></h2>
       <p class="hint" id="time-hint"></p>
 
@@ -132,7 +163,7 @@
     </div>
   </section>
 
-  <!-- ===================== 5. FINAL ===================== -->
+  <!-- ===================== 6. FINAL ===================== -->
   <section class="screen" id="s-final" aria-label="финал">
     <div class="wrap">
       <figure class="final-shot">

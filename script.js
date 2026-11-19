@@ -198,7 +198,7 @@
   }
 
   var scr = {
-    boot: $('#s-boot'), gallery: $('#s-gallery'),
+    boot: $('#s-boot'), gallery: $('#s-gallery'), stats: $('#s-stats'),
     choice: $('#s-choice'), time: $('#s-time'), final: $('#s-final')
   };
   var current = scr.boot;
@@ -426,16 +426,18 @@
     fig.style.setProperty('--rot', (dir * (2 + (i * 2.7) % 4.8)).toFixed(2) + 'deg');
     fig.style.setProperty('--fx', (dir * (24 + (i * 11) % 26)).toFixed(0) + '%');
 
+    var shot = el('span', 'shot');
     var img = el('img');
     img.alt = '';
     img.decoding = 'async';
     img.addEventListener('error', function () { if (img.src !== FALLBACK) img.src = FALLBACK; });
     img.src = PHOTOS[i];
+    shot.appendChild(img);
 
     var cap = el('figcaption');
     cap.textContent = CAPS[i % CAPS.length];
 
-    fig.appendChild(img);
+    fig.appendChild(shot);
     fig.appendChild(cap);
     frame.appendChild(fig);
     stack.appendChild(frame);
@@ -511,11 +513,88 @@
   tactile(nextBtn, { big: true });
   nextBtn.addEventListener('click', function () {
     clearTimeout(gTimer);
-    show(scr.choice);
+    show(scr.stats, startStats);
   });
 
   /* ===================================================================
-     экран 3 — чем займёмся
+     экран 3 — полгода в цифрах
+     =================================================================== */
+  var S = C.stats || {};
+  var statsReady = false;
+
+  function daysSince(iso) {
+    var m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(String(iso || '').trim());
+    if (!m) return null;
+    var start = Date.UTC(+m[1], +m[2] - 1, +m[3]);
+    var n = new Date();
+    var today = Date.UTC(n.getFullYear(), n.getMonth(), n.getDate());
+    return Math.max(0, Math.round((today - start) / 86400000));
+  }
+
+  function spaced(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  }
+
+  function countUp(node, target, dur) {
+    var t0 = 0;
+    function step(now) {
+      if (!t0) t0 = now;
+      var k = Math.min((now - t0) / dur, 1);
+      var e = 1 - Math.pow(1 - k, 3);
+      node.textContent = spaced(Math.round(target * e));
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var statDays = daysSince(S.startDate);
+  if (statDays === null) statDays = 182;
+
+  function runCounters() {
+    countUp($('#stat-days'), statDays, reduced ? 350 : 1250);
+    countUp($('#stat-hours'), statDays * 24, reduced ? 350 : 1450);
+  }
+
+  function startStats() {
+    $('#stats-title').textContent = S.title || '';
+    $('#stat-days-label').textContent = S.daysLabel || '';
+    $('#stat-hours-label').textContent = S.hoursLabel || '';
+    $('#stat-third').textContent = S.thirdValue || '∞';
+    $('#stat-third-label').textContent = S.thirdLabel || '';
+    $('#stats-line').textContent = S.line || '';
+    $('#btn-stats-next').textContent = S.next || '';
+
+    setTimeout(runCounters, 420);
+    setTimeout(function () {
+      var t = $('#tiles').getBoundingClientRect();
+      burst(t.left + t.width / 2, t.top + t.height / 2, { count: 22, power: 6, hearts: 0.8, size: 0.95 });
+      buzz([12, 40, 12]);
+    }, 700);
+
+    if (statsReady) return;
+    statsReady = true;
+
+    var tiles = document.querySelectorAll('.tile');
+    for (var i = 0; i < tiles.length; i++) {
+      (function (tile) {
+        tile.addEventListener('pointerdown', function (e) {
+          tile.classList.remove('pop');
+          void tile.offsetWidth;
+          tile.classList.add('pop');
+          burst(e.clientX, e.clientY, { count: 10, power: 4.4, hearts: 0.8 });
+          buzz(9);
+          runCounters();
+        }, { passive: true });
+      })(tiles[i]);
+    }
+  }
+
+  var statsNext = $('#btn-stats-next');
+  tactile(statsNext, { big: true });
+  statsNext.addEventListener('click', function () { show(scr.choice); });
+
+  /* ===================================================================
+     экран 4 — чем займёмся
      =================================================================== */
   var cards = $('#cards'), reaction = $('#choice-reaction'), locked = false;
 
@@ -551,7 +630,7 @@
   });
 
   /* ===================================================================
-     экран 4 — во сколько
+     экран 5 — во сколько
      =================================================================== */
   var grid = $('#time-grid'), picked = $('#time-picked'), doneBtn = $('#btn-done');
   var dateLabel = (C.time && C.time.dateLabel) || '';
@@ -610,7 +689,7 @@
   });
 
   /* ===================================================================
-     экран 5 — финал
+     экран 6 — финал
      =================================================================== */
   var finalDone = false;
 
@@ -633,6 +712,15 @@
     shot.classList.remove('reveal');
     void shot.offsetWidth;
     shot.classList.add('reveal');
+
+    /* фото можно потыкать */
+    shot.addEventListener('pointerdown', function (e) {
+      shot.classList.remove('wiggle');
+      void shot.offsetWidth;
+      shot.classList.add('wiggle');
+      burst(e.clientX, e.clientY, { count: 20, power: 6.5, hearts: 0.95, size: 1.05 });
+      buzz(11);
+    }, { passive: true });
 
     var share = (C.share || {});
     var msg = (share.message || '')
